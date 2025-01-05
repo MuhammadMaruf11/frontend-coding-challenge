@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Product } from "@/types";
 import { ProductModal } from "@/views/products/productModal/productModal";
 import { BackToHome } from "@/components/backToHome/backToHome";
@@ -10,21 +11,22 @@ import { usePagination } from "@/hooks/usePagination";
 import { PRODUCTS_DATA } from "@/data/productsData";
 
 export const Products: React.FC = () => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const {
-    currentPage,
-    totalPages,
-    paginatedItems: paginatedProducts,
-    handlePageChange,
-  } = usePagination({ items: PRODUCTS_DATA, itemsPerPage: 5 });
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { currentPage, totalPages, paginatedItems: paginatedProducts, handlePageChange } = usePagination({ items: PRODUCTS_DATA, itemsPerPage: 5 });
+
+  // Extract product ID from query parameters
+  const productId = searchParams.get("product");
+  const selectedProduct = productId ? PRODUCTS_DATA.find((p) => p.id === productId) : null;
 
   const handleOpenModal = useCallback((product: Product) => {
-    setSelectedProduct(product);
-  }, []);
+    router.push(`/products?product=${product.id}`);
+  }, [router]);
 
   const handleCloseModal = useCallback(() => {
-    setSelectedProduct(null);
-  }, []);
+    router.push("/products");
+  }, [router]);
 
   return (
     <div>
