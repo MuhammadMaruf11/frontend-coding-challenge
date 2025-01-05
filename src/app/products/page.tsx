@@ -1,5 +1,13 @@
+// app/products/page.tsx
+import { Suspense } from "react";
 import { Products } from "@/views/products";
 
-export default function ProductsRoot() {
-  return <Products />;
-}
+const ProductsPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Products />
+    </Suspense>
+  );
+};
+
+export default ProductsPage;
